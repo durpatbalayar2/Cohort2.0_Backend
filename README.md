@@ -1,3 +1,3 @@
-Day5
-🔸REST API with Database Setup
+Day7
+🔸Crud with Database
 
