@@ -16,16 +16,14 @@ html {
 }
 
 .container {
-  
   display: flex;
   flex-direction: column;
 
   width: 100%;
- 
 
   justify-content: center;
   justify-items: center;
-  
+
   gap: 2rem;
   padding-block: 5rem;
   padding-inline: 20rem;
@@ -35,11 +33,7 @@ html {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  
-  
- 
 
- 
   gap: 1rem;
   padding: 2rem;
   border: 2px solid #fff;
@@ -85,7 +79,6 @@ html {
 .note {
   background-color: #6a6767;
   width: 23vw;
- 
 
   padding-block: 1.5rem;
   padding-inline: 1rem;
@@ -95,16 +88,14 @@ html {
   gap: 1rem;
 }
 
-h1{
+h1 {
   font-size: 1.5rem;
   text-align: center;
 }
-p{
+p {
   font-size: 1rem;
   text-align: center;
 }
-
-
 
 .btns {
   display: flex;
@@ -136,4 +127,29 @@ p{
   background-color: rgb(4, 171, 4);
   color: #fff;
   font-size: 0.9rem;
+}
+
+@media (max-width: 746px) {
+  .container {
+    width: 100vw;
+    gap: 1rem;
+    padding: 1rem;
+    margin: 0;
+  }
+
+  .notes {
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    gap: 1rem;
+    padding: 2rem;
+    padding-inline: -1rem;
+
+    overflow-x: auto;
+  }
+
+  .note {
+    width: 100%;
+
+    border-radius: 10px;
+  }
 }
