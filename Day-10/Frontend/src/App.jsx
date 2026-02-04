@@ -16,10 +16,13 @@ function App() {
     e.preventDefault();
 
     if (editId) {
-      const res = await axios.put(`http://localhost:3000/api/notes/${editId}`, {
-        title,
-        description,
-      });
+      const res = await axios.put(
+        `https://cohort2-0-backend-p05k.onrender.com/api/notes/${editId}`,
+        {
+          title,
+          description,
+        },
+      );
 
       setNotes(
         notes.map((note) =>
@@ -30,10 +33,13 @@ function App() {
 
       setEditId(null);
     } else {
-      const res = await axios.post("http://localhost:3000/api/notes", {
-        title,
-        description,
-      });
+      const res = await axios.post(
+        "https://cohort2-0-backend-p05k.onrender.com/api/notes",
+        {
+          title,
+          description,
+        },
+      );
 
       setNotes([...notes, res.data.note]);
       toast.success("Note created successfully!");
@@ -46,7 +52,9 @@ function App() {
 
   async function fetchNotes() {
     try {
-      const response = await axios.get("http://localhost:3000/api/notes");
+      const response = await axios.get(
+        "https://cohort2-0-backend-p05k.onrender.com/api/notes",
+      );
 
       // console.log(response.data.notes)
 
@@ -58,7 +66,9 @@ function App() {
 
   async function handleDeleteNote(noteId) {
     try {
-      await axios.delete(`http://localhost:3000/api/notes/${noteId}`);
+      await axios.delete(
+        `https://cohort2-0-backend-p05k.onrender.com/api/notes/${noteId}`,
+      );
 
       setNotes(notes.filter((note) => note._id !== noteId));
        toast.success("Note deleted successfully!");
