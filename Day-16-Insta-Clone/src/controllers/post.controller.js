@@ -27,21 +27,43 @@ async function createPostController(req, res) {
 
   const token = req.cookies.token;
   if (!token) return res.status(401).json({ message: "Unauthorized" });
-  
 
-  // If token exist 
+  // If token exist
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const post = await postModel.create({
-        caption: req.body.caption,
-        imgUrl: file.url,
-        user: decoded.id,
-    });
+  const post = await postModel.create({
+    caption: req.body.caption,
+    imgUrl: file.url,
+    user: decoded.id,
+  });
 
-    res.status(201).json({
-        message: "Post created successfully",
-        post,
-    });
+  res.status(201).json({
+    message: "Post created successfully",
+    post,
+  });
 }
 
-module.exports = { createPostController };
+async function getPostController(req, res) {
+  const token = req.cookies.token;
+
+  //Token verify to get user details like id
+  //Jis User ne post create kiye wuski id
+
+  let decoded;
+
+  try {
+    decoded = jwt.verify(token, process.env.JWT_SECRET);
+  } catch (err) {
+    res.status(401).json({ message: "Token Invalid" });
+  }
+
+  const userId = decoded.id;
+
+  const posts = await postModel.find({
+    user: userId,
+  });
+
+  res.status(200).json({ message: "Post Fetched Successfully", posts });
+}
+
+module.exports = { createPostController, getPostController };
