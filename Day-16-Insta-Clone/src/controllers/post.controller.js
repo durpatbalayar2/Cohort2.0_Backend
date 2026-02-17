@@ -29,7 +29,13 @@ async function createPostController(req, res) {
   if (!token) return res.status(401).json({ message: "Unauthorized" });
 
   // If token exist
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  let decoded;
+
+  try {
+    decoded = jwt.verify(token, process.env.JWT_SECRET);
+  } catch (error) {
+    res.status(401).json({ message: "Unauthorized Access" });
+  }
 
   const post = await postModel.create({
     caption: req.body.caption,
@@ -45,6 +51,10 @@ async function createPostController(req, res) {
 
 async function getPostController(req, res) {
   const token = req.cookies.token;
+
+  if (!token) {
+    return res.status(401).json({ message: "unauthorized access" });
+  }
 
   //Token verify to get user details like id
   //Jis User ne post create kiye wuski id
@@ -66,4 +76,54 @@ async function getPostController(req, res) {
   res.status(200).json({ message: "Post Fetched Successfully", posts });
 }
 
-module.exports = { createPostController, getPostController };
+async function getPostDetailsController(req, res) {
+  // 1. Get token from cookies (user authentication)
+  const token = req.cookies.token;
+
+  // If no token → user not logged in
+  if (!token) return res.status(401).json({ message: "Unauthorized Access" });
+
+  // 2. Verify JWT token
+  let decoded;
+  try {
+    decoded = jwt.verify(token, process.env.JWT_SECRET);
+  } catch (error) {
+    return res.status(401).json({ message: "Invalid token" });
+  }
+
+  // Extract logged-in user ID from token
+  const userId = decoded.id;
+
+  // Get post ID from URL params
+  const postId = req.params.postId;
+
+  // 3. Fetch post from database
+  const post = await postModel.findById(postId);
+
+  // If post not found
+  if (!post)
+    return res.status(404).json({
+      message: "Post not found",
+    });
+
+  // 4. Check if post belongs to logged-in user
+  const isValidPost = post.user.toString() === userId;
+
+  if (!isValidPost)
+    return res.status(403).json({
+      message: "Forbidden content",
+    });
+
+  // 5. Send post details
+  res.status(200).json({
+    message: "Post details fetched successfully",
+    post,
+  });
+}
+
+
+module.exports = {
+  createPostController,
+  getPostController,
+  getPostDetailsController,
+};
