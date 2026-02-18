@@ -7,6 +7,7 @@
 *  **src** ->app.js  // Server ko create krne wala code
 *  root file: **server.js** // Server ko run krne wala code
 
+
 #️⃣REST Api (HTTP Methods)
 * POST -> creating new resource 
 * GET -> Fetching the data from server to client
