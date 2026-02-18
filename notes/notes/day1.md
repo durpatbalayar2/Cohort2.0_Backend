@@ -6,6 +6,7 @@
 * Install **package** -> express
 *  **src** ->app.js  // Server ko create krne wala code
 *  root file: **server.js** // Server ko run krne wala code
+*  Database setup : Connected DB to server & schema creation
 
 
 #️⃣REST Api (HTTP Methods)
@@ -30,6 +31,40 @@
 
 ---
 
+
+## 📂 Project Structure
+
+```
+project-root/
+│
+├── src/
+│   ├── config/
+│   │   └── db.js                # Database connection configuration
+│   │
+│   ├── controllers/
+│   │   ├── auth.controller.js   # Authentication logic (login, register, etc.)
+│   │   └── post.controller.js   # Post-related business logic
+│   │
+│   ├── models/
+│   │   ├── users.model.js       # User schema & model
+│   │   └── posts.model.js       # Post schema & model
+│   │
+│   ├── routes/
+│   │   ├── auth.routes.js       # Authentication routes
+│   │   └── post.routes.js       # Post routes
+│   │
+│   └── app.js                   # Express app configuration
+│
+├── .env                          # Environment variables
+├── server.js                     # Application entry point
+├── package.json                  # Project metadata & dependencies
+├── package-lock.json             # Dependency lock file
+└── README.md                     # Project documentation
+
+```
+
+
+
 **app.js**
  ```bash
 // Server create krne ka code
@@ -42,12 +77,31 @@ module.exports = app
 
 ```base
 // Server run krne ka code
-
+require("dotenv").config()  // to read data from dotenv
 const app = require("/src/app")
+
+const connectDB = require("config/db")
+connectDB();
+
 const PORT = 3000  // Port number where our server run
 
 app.listen(PORT , ()=> {
 console.log(`Server is running on ${PORT}`)
 ```
+
+**src/config/db.js**
+```
+const mongoose = require("mongoose")
+
+async function connectDB(){
+await mongoose.connect(process.env.MONGO_URI)
+console.log("Connected to DB")
+
+}
+
+module.exports = connectDB
+
+```
+
 
 
