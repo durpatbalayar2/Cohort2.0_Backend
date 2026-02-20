@@ -34,9 +34,13 @@ async function registerController(req, res) {
   });
 
   //4. Generate a token
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "1d",
-  });
+  const token = jwt.sign(
+    { id: user._id, username: user.username },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "1d",
+    },
+  );
 
   //5. Store the token in cookie
   res.cookie("token", token);
@@ -74,21 +78,28 @@ async function loginController(req, res) {
     return res.status(401).json({ message: "Invalid password" });
 
   //3. Generate a token
-  const new_token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "1d",
-  });
+  const new_token = jwt.sign(
+    { id: user._id, username: user.username },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "1d",
+    },
+  );
 
   //4. Store the token in cookie
   res.cookie("token", new_token);
 
   // 5. response send
 
-  res.status(200).json({ message: "User logged in successfully" , user:{
-    username: user.username,
-    email: user.email,
-    bio: user.bio,
-    profileImage: user.profileImage,
-  } });
+  res.status(200).json({
+    message: "User logged in successfully",
+    user: {
+      username: user.username,
+      email: user.email,
+      bio: user.bio,
+      profileImage: user.profileImage,
+    },
+  });
 }
 
 module.exports = {
