@@ -38,5 +38,14 @@ postRouter.get(
 
 postRouter.post("/like/:postId", userIdentify, postController.likePostController);
 
+/**
+ * @desc    Unlike a post
+ * @route   POST /api/posts/unlike/:postId
+ * @access  Private (Only logged-in users)
+
+ */
+
+postRouter.post("/unlike/:postId", userIdentify, postController.unlikePostController);
+
 
 module.exports = postRouter;

@@ -88,28 +88,86 @@ async function getPostDetailsController(req, res) {
 // Like post controller
 
 async function likePostController(req, res) {
-  // Get username from auth middleware
-  const username = req.user.username;
+  try {
+    const username = req.user.username;
+    const postId = req.params.postId;
 
-  // post id from url params
-  const postId = req.params.postId;
+    // Check if post exists
+    const post = await postModel.findById(postId);
+    if (!post) {
+      return res.status(404).json({
+        message: "Post not found",
+      });
+    }
 
-  const post = await postModel.findById(postId);
-
-  if (!post)
-    return res.status(404).json({
-      message: "Post not found",
+    // Check if already liked
+    const existingLike = await likeModel.findOne({
+      post: postId,
+      user: username,
     });
 
-  const like = await likeModel.create({
-    post: postId,
-    user: username,
-  });
+    if (existingLike) {
+      return res.status(409).json({
+        message: "You have already liked this post",
+      });
+    }
 
-  res.status(200).json({
-    message: "Post liked successfully",
-    like,
-  });
+    // Create like
+    const like = await likeModel.create({
+      post: postId,
+      user: username,
+    });
+
+    return res.status(201).json({
+      message: "Post liked successfully",
+      like,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+}
+
+// Unlike post controller
+
+async function unlikePostController(req, res) {
+  try {
+    const username = req.user.username;
+    const postId = req.params.postId;
+
+    // check if post exist or not
+    const post = await postModel.findById(postId);
+    if (!post) {
+      return res.status(404).json({
+        message: "Post not found",
+      });
+    }
+
+    // check if like exist or not
+    const existingLike = await likeModel.findOne({
+      post: postId,
+      user: username,
+    });
+
+    if (!existingLike) {
+      return res.status(404).json({
+        message: "You have not liked this post",
+      });
+    }
+
+    // delete the like
+    await likeModel.findByIdAndDelete(existingLike._id);
+
+    return res.status(200).json({
+      message: "Post unliked successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
 }
 
 module.exports = {
@@ -117,4 +175,5 @@ module.exports = {
   getPostController,
   getPostDetailsController,
   likePostController,
+  unlikePostController,
 };
