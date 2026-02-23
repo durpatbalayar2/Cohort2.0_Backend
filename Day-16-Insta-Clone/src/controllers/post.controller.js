@@ -2,11 +2,14 @@ const postModel = require("../models/posts.model");
 
 const ImageKit = require("@imagekit/nodejs");
 const { toFile } = require("@imagekit/nodejs");
+const likeModel = require("../models/like.model");
 
 // Initialize ImageKit
 const imagekit = new ImageKit({
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
 });
+
+// Create post controller
 
 async function createPostController(req, res) {
   //   console.log(req.body,req.file);
@@ -36,6 +39,8 @@ async function createPostController(req, res) {
   });
 }
 
+// Get post controller
+
 async function getPostController(req, res) {
   //Data from middleware
   const userId = req.user.id;
@@ -46,6 +51,8 @@ async function getPostController(req, res) {
 
   res.status(200).json({ message: "Post Fetched Successfully", posts });
 }
+
+// Get post details controller
 
 async function getPostDetailsController(req, res) {
   //Data from middleware
@@ -78,8 +85,36 @@ async function getPostDetailsController(req, res) {
   });
 }
 
+// Like post controller
+
+async function likePostController(req, res) {
+  // Get username from auth middleware
+  const username = req.user.username;
+
+  // post id from url params
+  const postId = req.params.postId;
+
+  const post = await postModel.findById(postId);
+
+  if (!post)
+    return res.status(404).json({
+      message: "Post not found",
+    });
+
+  const like = await likeModel.create({
+    post: postId,
+    user: username,
+  });
+
+  res.status(200).json({
+    message: "Post liked successfully",
+    like,
+  });
+}
+
 module.exports = {
   createPostController,
   getPostController,
   getPostDetailsController,
+  likePostController,
 };

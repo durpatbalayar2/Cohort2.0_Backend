@@ -13,16 +13,12 @@ userRouter.post(
   userController.followUserController,
 );
 
-
 /**
+ * POST/api/users/unfollow/userId
  * @desc    Unfollow a user
  * @route   POST /api/follow/:username
  * @access  Private (Only logged-in users)
- * This controller:
- * 1. Prevents a user from unfollowing themselves
- * 2. Checks if the target user exists
- * 3. Checks if the follow relationship exists before trying to delete it
- * 4. Deletes the follow relationship if valid
+ 
  */
 
 userRouter.post(

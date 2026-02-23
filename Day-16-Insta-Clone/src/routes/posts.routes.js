@@ -28,4 +28,15 @@ postRouter.get(
   postController.getPostDetailsController,
 );
 
+
+/**
+ * @desc    Like a post
+ * @route   POST /api/posts/like/:postId
+ * @access  Private (Only logged-in users)
+
+ */
+
+postRouter.post("/like/:postId", userIdentify, postController.likePostController);
+
+
 module.exports = postRouter;
