@@ -72,6 +72,16 @@ async function followUserController(req, res) {
   }
 }
 
+/**
+ * @desc    Unfollow a user
+ * @route   DELETE /api/follow/:username
+ * @access  Private (Only logged-in users)
+ *
+ * This controller:
+ * 1. Checks if the follow relationship exists
+ * 2. Deletes the follow relationship if it exists
+ */
+
 async function unfollowUserController(req, res) {
   // Extract logged-in user's username from auth middleware
   const followerUsername = req.user.username;
