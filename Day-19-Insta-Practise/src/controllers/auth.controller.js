@@ -62,6 +62,52 @@ async function loginController(req, res) {
   // We can login through -> username/password or email/password
 
   const { username, email, password } = req.body;
+
+  //1. Check user exist or not
+
+  const user = await userModel.findOne({
+    $or: [{ email }, { username }],
+  });
+
+  if (!user) {
+    return res.status(404).json({
+      message: "User not found",
+    });
+  }
+
+  //2. Validate the password
+  //bcrypt.compare(plainPassword, hashedPassword)
+  
+  const isPassValid = await bcrypt.compare(password, user.password);
+
+  if (!isPassValid) {
+    return res.status(401).json({
+      message: "Invalid Password",
+    });
+  }
+
+  //3. Generate a new token to login
+
+  const new_token = jwt.sign(
+    { id: user._id, username: user.username },
+    process.env.JWT_SECRET,
+    { expiresIn: "1d" },
+  );
+
+  //4. Store the token in cookie storage
+  res.cookie("token", new_token);
+
+  //5. Send the respone
+
+  res.status(200).json({
+    message: "User logged in successfully",
+    user: {
+      username: user.username,
+      email: user.email,
+      bio: user.bio,
+      profileImage: user.profileImage,
+    },
+  });
 }
 
 module.exports = { registerController, loginController };
