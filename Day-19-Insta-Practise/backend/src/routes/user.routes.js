@@ -30,4 +30,30 @@ userRouter.post(
   userController.unfollowUserController,
 );
 
+
+/**
+ * @route POST /api/users/accept/:username
+ * @desc Accept follow request
+ * @access Protected
+ */
+
+userRouter.post(
+  "/accept/:username",
+  userIdentify,
+  userController.acceptFollowController,
+);
+
+
+/**
+ * @route POST /api/users/reject/:username
+ * @desc Reject follow request
+ * @access Protected    
+ 
+ */
+userRouter.post(
+  "/reject/:username",
+  userIdentify,
+  userController.rejectFollowController,
+);
+
 module.exports = userRouter;

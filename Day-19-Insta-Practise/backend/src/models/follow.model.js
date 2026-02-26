@@ -9,12 +9,23 @@
 const mongoose = require("mongoose");
 
 // followSchema
-const followSchema = new mongoose.Schema({
-  follower: String,
-  followee: String,
-},{
-    timestamps:true
-});
+const followSchema = new mongoose.Schema(
+  {
+    follower: String,
+    followee: String,
+    status: {
+      type: String,
+      enum: {
+        values: ["pending", "accepted", "rejected"],
+        message: "Status can only be pending, accepted or rejected",
+      },
+      default: "pending",
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
 
 // To ensure that a user cannot follow the same user multiple times
 followSchema.index({ follower: 1, followee: 1 }, { unique: true });
