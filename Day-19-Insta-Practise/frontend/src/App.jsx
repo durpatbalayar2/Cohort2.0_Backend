@@ -1,14 +1,9 @@
-import { Route, Routes } from "react-router-dom";
-import Register from "./features/auth/pages/Register";
-import Login from "./features/auth/pages/Login";
+import AppRoutes from "./AppRoutes";
 
 function App() {
   return (
     <>
-      <Routes>
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-      </Routes>
+      <AppRoutes />
     </>
   );
 }

@@ -77,7 +77,7 @@ async function loginController(req, res) {
 
   //2. Validate the password
   //bcrypt.compare(plainPassword, hashedPassword)
-  
+
   const isPassValid = await bcrypt.compare(password, user.password);
 
   if (!isPassValid) {
@@ -110,4 +110,25 @@ async function loginController(req, res) {
   });
 }
 
-module.exports = { registerController, loginController };
+async function getMeController(req, res) {
+  // We can get the user information from req.user which is set by the auth middleware
+  const userId = req.user.id;
+  const user = await userModel.findById(userId);
+
+  if (!user) {
+    return res.status(404).json({
+      message: "User not found",
+    });
+  }
+
+  res.status(200).json({
+    user: {
+      username: user.username,
+      email: user.email,
+      bio: user.bio,
+      profileImage: user.profileImage,
+    },
+  });
+}
+
+module.exports = { registerController, loginController, getMeController };
