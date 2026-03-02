@@ -1,10 +1,15 @@
-import AppRoutes from "./AppRoutes";
+import React from "react";
+import "./features/shared/global.scss";
+import { router } from "./app.routes";
+
+import { RouterProvider } from "react-router-dom";
+import AuthProvider from "./features/auth/auth.context";
 
 function App() {
   return (
-    <>
-      <AppRoutes />
-    </>
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   );
 }
 

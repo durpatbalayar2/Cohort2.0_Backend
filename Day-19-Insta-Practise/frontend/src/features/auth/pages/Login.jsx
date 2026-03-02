@@ -1,56 +1,52 @@
 import React, { useState } from "react";
 import "../style/form.scss";
 import { Link, useNavigate } from "react-router-dom";
-
 import { useAuth } from "../hooks/useAuth";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const { handleLogin,loading } = useAuth();
+  const { user, loading, handleLogin } = useAuth();
 
-  const navigate =useNavigate()
+  const navigate = useNavigate();
+
+  const handleForm = async (e) => {
+    e.preventDefault();
+    await handleLogin(username, password);
+    console.log("user logged in")
+    navigate("/");
+  };
 
   if(loading){
-    return <h1>Loading....</h1>
+    return <main>
+      <h1>Loading.....</h1>
+    </main>
   }
 
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-
-    const res = await handleLogin(username, password);
-    navigate("/")
-
-    console.log(res);
-  };
   return (
     <main>
       <div className="form-container">
         <h1>Login</h1>
-        <form onSubmit={handleFormSubmit}>
+        <form onSubmit={handleForm}>
           <input
-            onInput={(e) => setUsername(e.target.value)}
+            onChange={(e) => setUsername(e.target.value)}
             value={username}
             type="text"
-            name="username"
-            placeholder="Enter username"
+            placeholder="Enter the username"
           />
-
           <input
-            onInput={(e) => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
             value={password}
             type="password"
             placeholder="Enter your password"
           />
 
-          <button className="log">Login</button>
+          <button className="button prim-btn">login</button>
         </form>
+
         <p>
-          Do not have account?{" "}
-          <Link className="link" to="/register">
-            Register
-          </Link>
+          Donot you have account ?<Link to="/register">Register</Link>
         </p>
       </div>
     </main>
