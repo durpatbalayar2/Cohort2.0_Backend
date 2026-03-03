@@ -79,4 +79,13 @@ postRouter.post(
   postController.unlikePostController,
 );
 
+/**
+ * @route GET /api/posts/feeds
+ * @desc Fetch all the feeds from DB
+ * @access Private
+ *
+ */
+
+postRouter.get("/feeds", userIdentify, postController.getFeedController);
+
 module.exports = postRouter;

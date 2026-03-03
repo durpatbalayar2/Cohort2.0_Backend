@@ -100,13 +100,12 @@ async function likePostController(req, res) {
   const userId = req.user.id;
   const postId = req.params.postId;
 
-
-   // ✅ Validate ObjectId first
-    if (!mongoose.Types.ObjectId.isValid(postId)) {
-      return res.status(400).json({
-        message: "Invalid post ID",
-      });
-    }
+  // ✅ Validate ObjectId first
+  if (!mongoose.Types.ObjectId.isValid(postId)) {
+    return res.status(400).json({
+      message: "Invalid post ID",
+    });
+  }
 
   //1. Check if post exist or not
   const post = await postModel.findById(postId);
@@ -168,10 +167,30 @@ async function unlikePostController(req, res) {
     message: "Post unliked successfully",
   });
 }
+
+async function getFeedController(req, res) {
+  // Get all post feeds
+
+  //populate("user") => to get user details along with post details in the resp. If we don't use populate then we will get only userId in the post details but with populate we can get complete user details in the post details response. In postSchema we have to 
+
+  // Also in response we are getting user details along with password. But we should not send password in response. So to avoid sending password in response we have to make little bit change in user Model. We have to set select: false for password field in user model. After setting select: false for password field in user model we cannot get password in response when we use populate to get user details in post details response.
+
+  // But this create  another problem when user try to login then we cannot get password from DB to compare with password sent by user in login request. So to solve this problem we can use select("+password") in login controller when we are fetching user details from DB to get password in login controller for comparing with password sent by user in login request.
+
+
+  const posts = await postModel.find().populate("user");
+
+  res.status(200).json({
+    message: "Post Feed fetched Successfully",
+    posts,
+  });
+}
+
 module.exports = {
   createPostController,
   getPostController,
   getPostDetailsController,
   likePostController,
   unlikePostController,
+  getFeedController
 };

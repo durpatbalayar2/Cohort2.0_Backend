@@ -16,7 +16,9 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, "Password is required"],
-  },
+    select: false, // This will prevent password from being returned in any query results by default
+  }, 
+  // We will use select: false for password field to avoid sending password in response when we use populate to get user details in post details response. But this will create problem when user try to login then we cannot get password from DB to compare with password sent by user in login request. So to solve this problem we can use select("+password") in login controller when we are fetching user details from DB to get password in login controller for comparing with password sent by user in login request.
   bio: String,
 
   profileImage: {

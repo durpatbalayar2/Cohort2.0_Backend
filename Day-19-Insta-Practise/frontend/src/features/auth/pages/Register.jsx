@@ -1,4 +1,3 @@
-import React from "react";
 import "../style/form.scss";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -10,17 +9,20 @@ function Register() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const { user, loading, handleRegister } = useAuth();
+  const { loading, handleRegister } = useAuth();
 
   const handleForm = async (e) => {
     e.preventDefault();
     await handleRegister(username, email, password);
-   navigate("/login")
-    
+    navigate("/login");
   };
 
-  if(loading){
-    return <main><h1>Loading....</h1></main>
+  if (loading) {
+    return (
+      <main>
+        <h1>Loading....</h1>
+      </main>
+    );
   }
 
   return (
