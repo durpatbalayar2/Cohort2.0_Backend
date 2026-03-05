@@ -97,7 +97,7 @@ async function getPostDetailsController(req, res) {
 }
 
 async function likePostController(req, res) {
-  const userId = req.user.id;
+  const username= req.user.username;
   const postId = req.params.postId;
 
   // ✅ Validate ObjectId first
@@ -118,7 +118,7 @@ async function likePostController(req, res) {
   //2.Check if post already liked by the user or not
 
   const isAlreadyLiked = await likeModel.findOne({
-    user: userId,
+    user: username,
     post: postId,
   });
 
@@ -128,8 +128,8 @@ async function likePostController(req, res) {
     });
 
   // 3 if not like then create a like record
-  const like = await likeModel.create({
-    user: userId,
+  const liked = await likeModel.create({
+    user: username,
     post: postId,
   });
 
@@ -137,7 +137,7 @@ async function likePostController(req, res) {
 
   res.status(200).json({
     message: "Post liked successfully",
-    like,
+    liked,
   });
 }
 
@@ -169,16 +169,29 @@ async function unlikePostController(req, res) {
 }
 
 async function getFeedController(req, res) {
-  // Get all post feeds
+  const user = req.user; // middleware (logged-in)
 
-  //populate("user") => to get user details along with post details in the resp. If we don't use populate then we will get only userId in the post details but with populate we can get complete user details in the post details response. In postSchema we have to 
+  // Get all post feeds
+  //populate("user") => to get user details along with post details in the resp. If we don't use populate then we will get only userId in the post details but with populate we can get complete user details in the post details response. In postSchema we have to
 
   // Also in response we are getting user details along with password. But we should not send password in response. So to avoid sending password in response we have to make little bit change in user Model. We have to set select: false for password field in user model. After setting select: false for password field in user model we cannot get password in response when we use populate to get user details in post details response.
 
   // But this create  another problem when user try to login then we cannot get password from DB to compare with password sent by user in login request. So to solve this problem we can use select("+password") in login controller when we are fetching user details from DB to get password in login controller for comparing with password sent by user in login request.
 
+  //  (await postModel.find().populate("user")).map(async (post) =>{}) return all the caption  of posts with promise pending
+  // To resolve this issue we use Promise.all () to wait for all the promises to resolve and then we can get the caption of all posts.
 
-  const posts = await postModel.find().populate("user");
+  const posts = await Promise.all(
+    (await postModel.find().populate("user").lean()).map(async (post) => {
+      const isLiked = await likeModel.findOne({
+        user: user.username,
+        post: post._id,
+      });
+      post.isLiked = !!isLiked;     //!! -> boolean value  
+
+      return post;
+    }),
+  );
 
   res.status(200).json({
     message: "Post Feed fetched Successfully",
@@ -192,5 +205,5 @@ module.exports = {
   getPostDetailsController,
   likePostController,
   unlikePostController,
-  getFeedController
+  getFeedController,
 };

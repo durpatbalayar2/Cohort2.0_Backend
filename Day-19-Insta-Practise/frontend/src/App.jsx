@@ -4,11 +4,14 @@ import { router } from "./app.routes";
 
 import { RouterProvider } from "react-router-dom";
 import AuthProvider from "./features/auth/auth.context";
+import PostAuthContext from "./features/posts/post.context";
 
 function App() {
   return (
     <AuthProvider>
-      <RouterProvider router={router} />
+      <PostAuthContext>
+        <RouterProvider router={router} />
+      </PostAuthContext>
     </AuthProvider>
   );
 }
